@@ -1,0 +1,21 @@
+{
+  "name": "AInothing.top",
+  "short_name": "AInothing",
+  "description": "Revenue breakdowns and editorial analysis for AI and internet businesses.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f1e8",
+  "theme_color": "#b9682f",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48 32x32 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
