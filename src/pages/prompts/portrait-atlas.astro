@@ -1,5 +1,8 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
+import { getPortraitData } from '../../lib/portrait-content';
+
+const portraitData = await getPortraitData();
 
 const groups = [
   { index: '01', title: 'Foundation', items: ['Adult age', 'East Asian', 'European', 'Portrait intent'] },
@@ -31,6 +34,28 @@ const groups = [
     ))}
   </section>
 
+  <section class="results shell">
+    <header data-reveal>
+      <div><p class="overline">Generated results / 06</p><h2>Face shape,<br /><em>isolated.</em></h2></div>
+      <p>{portraitData.study.method}</p>
+    </header>
+    <div class="portrait-grid">
+      {portraitData.entries.map((portrait, index) => (
+        <article class="portrait-card" data-reveal>
+          <figure>
+            <img src={portrait.image} alt={portrait.alt} loading="lazy" decoding="async" />
+            <span>{String(index + 1).padStart(2, '0')}</span>
+          </figure>
+          <div class="portrait-meta">
+            <div><p>{portrait.region.replace('-', ' ')}</p><h3>{portrait.faceShape}</h3></div>
+            <button type="button" data-copy-prompt={portrait.prompt} aria-label={`Copy prompt for ${portrait.title}`}>Copy prompt</button>
+          </div>
+          <p class="prompt-text">{portrait.prompt}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
   <section class="composer shell" data-reveal>
     <div>
       <p class="overline">Prompt anatomy / preview</p>
@@ -46,6 +71,16 @@ const groups = [
   </section>
 </MainLayout>
 
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-prompt]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(button.dataset.copyPrompt ?? '');
+      button.textContent = 'Copied';
+      window.setTimeout(() => { button.textContent = 'Copy prompt'; }, 1600);
+    });
+  });
+</script>
+
 <style>
   .atlas-hero { padding: clamp(4rem,8vw,8rem) 0; }
   .atlas-meta { display:flex;justify-content:space-between;border-bottom:1px solid var(--foreground);padding-bottom:1rem;color:var(--muted-text) }
@@ -56,6 +91,9 @@ const groups = [
   .atlas-map{padding-bottom:clamp(5rem,10vw,9rem)}.atlas-map>header{display:flex;justify-content:space-between;padding:1rem 0;border-top:1px solid var(--foreground);color:var(--muted-text)}.atlas-map>header p{margin:0}
   .group{display:grid;grid-template-columns:70px minmax(260px,.8fr) 1fr;gap:2rem;align-items:center;min-height:145px;border-top:1px solid var(--border)}.group:last-child{border-bottom:1px solid var(--border)}
   .group>span{font-family:var(--font-mono);font-size:.66rem;color:var(--muted-text)}.group h2{font-size:clamp(1.8rem,3.5vw,3.5rem)}.group ul{display:flex;flex-wrap:wrap;gap:.5rem;margin:0;padding:0;list-style:none}.group li{padding:.45rem .65rem;border:1px solid var(--border);font-family:var(--font-mono);font-size:.61rem;letter-spacing:.04em;text-transform:uppercase}
+  .results{padding-bottom:clamp(5rem,10vw,9rem)}.results>header{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;padding:2rem 0;border-top:1px solid var(--foreground)}.results>header h2 em{color:var(--secondary);font-weight:500}.results>header>p{max-width:34rem;color:var(--muted-text)}
+  .portrait-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(2rem,4vw,4.5rem) 1.25rem}.portrait-card figure{position:relative;margin:0;aspect-ratio:4/5;overflow:hidden;background:#15161a}.portrait-card img{width:100%;height:100%;object-fit:cover;filter:saturate(.84);transition:transform 800ms var(--ease-premium),filter 600ms var(--ease-premium)}.portrait-card:hover img{transform:scale(1.025);filter:saturate(1)}.portrait-card figure span{position:absolute;left:.8rem;bottom:.7rem;color:#fff;font-family:var(--font-mono);font-size:.62rem}.portrait-meta{display:flex;justify-content:space-between;align-items:end;padding:1rem 0;border-bottom:1px solid var(--border)}.portrait-meta p{margin:0;color:var(--muted-text);font-family:var(--font-mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase}.portrait-meta h3{margin-top:.2rem;text-transform:capitalize}.portrait-meta button{padding:.45rem .65rem;border:1px solid var(--border);background:transparent;color:var(--foreground);font-family:var(--font-mono);font-size:.58rem;text-transform:uppercase;cursor:pointer}.portrait-meta button:hover{background:var(--foreground);color:#fff}.prompt-text{display:-webkit-box;margin-top:1rem;overflow:hidden;color:var(--muted-text);font-size:.78rem;line-height:1.55;-webkit-box-orient:vertical;-webkit-line-clamp:3}
   .composer{margin-bottom:clamp(5rem,10vw,9rem);padding:clamp(2rem,5vw,5rem);display:grid;grid-template-columns:.9fr 1.1fr;gap:4rem;background:var(--foreground);color:#fff}.composer h2{margin-top:1rem;color:#fff}.composer ol{margin:0;padding:0;list-style:none}.composer li{display:grid;grid-template-columns:100px 1fr;gap:1rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,.18)}.composer li span{color:var(--signal);font-family:var(--font-mono);font-size:.64rem;text-transform:uppercase}.composer li p{margin:0;color:rgba(255,255,255,.72)}
-  @media(max-width:750px){.atlas-intro{grid-template-columns:1fr;margin-left:0}.group{grid-template-columns:36px 1fr;padding:1.5rem 0}.group ul{grid-column:2}.composer{grid-template-columns:1fr}.atlas-meta span{display:none}}
+  @media(max-width:900px){.portrait-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:750px){.atlas-intro,.results>header{grid-template-columns:1fr;margin-left:0}.group{grid-template-columns:36px 1fr;padding:1.5rem 0}.group ul{grid-column:2}.composer{grid-template-columns:1fr}.atlas-meta span{display:none}.portrait-grid{grid-template-columns:1fr}.portrait-card figure{aspect-ratio:4/4.7}}
 </style>

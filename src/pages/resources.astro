@@ -1,5 +1,9 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
+import { getPortraitData } from '../lib/portrait-content';
+
+const portraitData = await getPortraitData();
+const coverPortrait = portraitData.entries[3];
 ---
 
 <MainLayout title="Prompt Lab | AInothing" description="Tested AIGC prompt systems organized by model, task, variables, and generated results.">
@@ -18,7 +22,10 @@ import MainLayout from '../layouts/MainLayout.astro';
   <section class="studies shell">
     <div class="section-line" data-reveal><p class="overline">Current studies / 01</p><span>One focused collection at a time</span></div>
     <a class="study" href="/prompts/portrait-atlas" data-reveal>
-      <div class="study-art" aria-hidden="true"><span></span><span></span><i>001</i></div>
+      <div class="study-art">
+        <img src={coverPortrait.image} alt={coverPortrait.alt} loading="lazy" decoding="async" />
+        <span>Face shape / controlled study</span><i>001</i>
+      </div>
       <div class="study-copy">
         <p class="overline">GPT Image 2 / Adult portrait research</p>
         <h2>Portrait Atlas</h2>
@@ -50,9 +57,11 @@ import MainLayout from '../layouts/MainLayout.astro';
   .section-line > p { margin: 0; }
   .section-line span { font-size: .8rem; }
   .study { display: grid; grid-template-columns: .8fr 1fr auto; gap: clamp(2rem,5vw,5rem); align-items: center; padding: clamp(2rem,5vw,5rem); background: var(--foreground); color: #fff; }
-  .study-art { position: relative; min-height: 420px; display: grid; place-items: center; background: radial-gradient(circle, rgba(65,94,255,.5), transparent 48%), #171c2b; border: 1px solid rgba(255,255,255,.18); overflow: hidden; }
-  .study-art span { position: absolute; width: 55%; aspect-ratio: .72; border: 1px solid rgba(255,255,255,.72); border-radius: 46% 46% 48% 48% / 38% 38% 58% 58%; }
-  .study-art span:nth-child(2) { width: 76%; aspect-ratio: 1; border-radius: 50%; border-color: rgba(185,255,102,.38); }
+  .study-art { position: relative; min-height: 420px; background:#171c2b; border: 1px solid rgba(255,255,255,.18); overflow: hidden; }
+  .study-art::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(0,0,0,.72));pointer-events:none}
+  .study-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.75);transition:transform 900ms var(--ease-premium),filter 600ms var(--ease-premium)}
+  .study:hover .study-art img{transform:scale(1.035);filter:saturate(1)}
+  .study-art span{position:absolute;z-index:1;right:1rem;top:1rem;padding:.4rem .55rem;background:rgba(10,10,12,.62);font-family:var(--font-mono);font-size:.56rem;letter-spacing:.06em;text-transform:uppercase}
   .study-art i { position: absolute; left: 1rem; bottom: 1rem; color: var(--signal); font-family: var(--font-mono); font-size: .68rem; font-style: normal; }
   .study-copy .overline { color: var(--signal); }
   .study-copy h2 { margin: 1.1rem 0 1.4rem; color: #fff; }
