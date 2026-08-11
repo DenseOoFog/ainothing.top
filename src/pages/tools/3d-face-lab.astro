@@ -1,0 +1,28 @@
+---
+import FaceLab from '../../components/FaceLab.astro';
+import MainLayout from '../../layouts/MainLayout.astro';
+---
+
+<MainLayout title="3D Face Lab | AInothing" description="Shape an adult female GNM head locally in your browser and translate its structure and expression into a GPT Image 2 prompt.">
+  <section class="lab-hero shell">
+    <div class="hero-meta" data-reveal><p class="overline">Local tools / Experimental 01</p><span>Google GNM · Three.js · GPT Image 2</span></div>
+    <div class="hero-title" data-reveal>
+      <h1>Shape a face.<br /><em>Name every choice.</em></h1>
+      <p>Explore adult female face architecture in three dimensions, then turn what you see into a precise image-generation prompt. The model and every adjustment stay in your browser.</p>
+    </div>
+  </section>
+  <div class="lab-shell shell" data-reveal><FaceLab /></div>
+  <section class="method shell">
+    <div data-reveal><p class="overline">How this prototype works</p><h2>A model engine,<br /><em>not six fixed heads.</em></h2></div>
+    <ol data-reveal>
+      <li><span>01</span><p><b>Download once.</b> The official GNM v3 model comes directly from Google and is cached by your browser.</p></li>
+      <li><span>02</span><p><b>Shape locally.</b> A Web Worker applies semantic deformations while Three.js renders the result in real time.</p></li>
+      <li><span>03</span><p><b>Translate choices.</b> The same face and expression parameters continuously compose a GPT Image 2 prompt.</p></li>
+    </ol>
+  </section>
+</MainLayout>
+
+<style>
+  .lab-hero{padding:clamp(4rem,8vw,8rem) 0 3rem}.hero-meta{display:flex;justify-content:space-between;padding-bottom:1rem;border-bottom:1px solid var(--foreground)}.hero-meta p{margin:0}.hero-meta span{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase}.hero-title{display:grid;grid-template-columns:1.45fr .55fr;gap:3rem;align-items:end;padding-top:clamp(2rem,5vw,5rem)}.hero-title h1{font-size:clamp(3.8rem,9vw,9rem);line-height:.82}.hero-title h1 em,.method h2 em{color:var(--secondary);font-weight:500}.hero-title>p{max-width:32rem;color:var(--muted-text);font-size:1.02rem}.lab-shell{padding-bottom:clamp(5rem,9vw,8rem)}.method{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(3rem,8vw,8rem);padding-bottom:clamp(5rem,10vw,9rem)}.method h2{margin-top:1rem}.method ol{margin:0;padding:0;list-style:none;border-top:1px solid var(--foreground)}.method li{display:grid;grid-template-columns:44px 1fr;gap:1rem;padding:1.5rem 0;border-bottom:1px solid var(--border)}.method li span{font-family:var(--font-mono);font-size:.62rem;color:var(--secondary)}.method li p{margin:0;color:var(--muted-text)}.method li b{color:var(--foreground)}
+  @media(max-width:760px){.hero-meta span{display:none}.hero-title,.method{grid-template-columns:1fr}.hero-title h1{font-size:clamp(3.7rem,17vw,6rem)}.lab-shell{width:100%}}
+</style>

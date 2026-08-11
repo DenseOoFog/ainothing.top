@@ -1,0 +1,337 @@
+<section class="face-lab" data-face-lab>
+  <header class="lab-bar">
+    <div>
+      <span class="status-dot" data-status-dot></span>
+      <p><b data-engine-status>Engine not loaded</b><small>GNM Head v3 · Local browser runtime</small></p>
+    </div>
+    <button class="quiet-button" type="button" data-clear-model disabled>Clear local model</button>
+  </header>
+
+  <div class="lab-layout">
+    <aside class="controls" aria-label="Face parameters">
+      <div class="control-heading"><span>01</span><div><p>Identity</p><small>Adult women only</small></div></div>
+      <fieldset class="segment-group">
+        <legend>Region</legend>
+        <label><input type="radio" name="region" value="east-asian" checked /><span>East Asian</span></label>
+        <label><input type="radio" name="region" value="european" /><span>European</span></label>
+      </fieldset>
+
+      <fieldset class="shape-group">
+        <legend>Face architecture</legend>
+        <div class="shape-grid">
+          <button type="button" data-shape="oval" class="is-active">Oval</button>
+          <button type="button" data-shape="round">Round</button>
+          <button type="button" data-shape="heart">Heart</button>
+          <button type="button" data-shape="square">Square</button>
+          <button type="button" data-shape="diamond">Diamond</button>
+          <button type="button" data-shape="oblong">Long</button>
+        </div>
+      </fieldset>
+
+      <div class="control-heading"><span>02</span><div><p>Structure</p><small>Semantic deformation</small></div></div>
+      <div class="sliders">
+        <label>Face width <output data-output="faceWidth">0</output><input data-parameter="faceWidth" type="range" min="-100" max="100" value="0" /></label>
+        <label>Face length <output data-output="faceLength">12</output><input data-parameter="faceLength" type="range" min="-100" max="100" value="12" /></label>
+        <label>Forehead <output data-output="forehead">0</output><input data-parameter="forehead" type="range" min="-100" max="100" value="0" /></label>
+        <label>Cheekbones <output data-output="cheekbones">15</output><input data-parameter="cheekbones" type="range" min="-100" max="100" value="15" /></label>
+        <label>Jaw width <output data-output="jaw">-5</output><input data-parameter="jaw" type="range" min="-100" max="100" value="-5" /></label>
+        <label>Chin taper <output data-output="chin">10</output><input data-parameter="chin" type="range" min="-100" max="100" value="10" /></label>
+      </div>
+
+      <div class="control-heading"><span>03</span><div><p>Expression</p><small>Preview + prompt</small></div></div>
+      <label class="select-label">Expression
+        <select data-expression>
+          <option value="neutral">Neutral</option>
+          <option value="subtle-smile">Subtle smile</option>
+          <option value="happy">Happy</option>
+          <option value="serious">Serious</option>
+          <option value="surprised">Surprised</option>
+        </select>
+      </label>
+      <label class="expression-range">Intensity <output data-expression-output>35</output><input data-expression-intensity type="range" min="0" max="100" value="35" /></label>
+    </aside>
+
+    <div class="viewport-panel">
+      <div class="viewer" data-viewer aria-label="Interactive 3D head preview">
+        <div class="loading-card" data-loading-card>
+          <p class="overline">Local model required / 53.3 MB</p>
+          <h2>Load the face engine.</h2>
+          <p>The official Google GNM model is downloaded directly to this browser, cached locally, and never receives your parameters.</p>
+          <button type="button" data-load-model>Download GNM locally</button>
+          <div class="progress" hidden data-progress><i data-progress-bar></i></div>
+          <small data-progress-label>One download. Future visits load from this device.</small>
+        </div>
+        <div class="viewer-labels" aria-hidden="true"><span>Front / Z+</span><span>Drag to orbit · wheel to zoom</span></div>
+      </div>
+      <div class="view-actions">
+        <button type="button" data-reset-view disabled>Reset view</button>
+        <span><i></i> Geometry stays on device</span>
+      </div>
+    </div>
+
+    <aside class="prompt-panel">
+      <div class="prompt-head">
+        <div><p class="overline">GPT Image 2</p><h2>Prompt output</h2></div>
+        <span>Live</span>
+      </div>
+      <div class="prompt-output" data-prompt-output aria-live="polite"></div>
+      <div class="prompt-actions">
+        <button type="button" data-copy-prompt>Copy prompt</button>
+        <button type="button" class="secondary" data-save-json>Save parameters</button>
+      </div>
+      <dl>
+        <div><dt>Model source</dt><dd>Google GNM v3</dd></div>
+        <div><dt>Runtime</dt><dd>Web Worker + Three.js</dd></div>
+        <div><dt>Privacy</dt><dd>No parameter upload</dd></div>
+      </dl>
+      <p class="license-note">GNM is provided by Google under Apache 2.0. This independent interface is not affiliated with Google.</p>
+    </aside>
+  </div>
+</section>
+
+<script>
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+  const MODEL_URL = 'https://raw.githubusercontent.com/google/GNM/main/gnm/shape/data/versions/v3_0/gnm_head.npz';
+  const CACHE_NAME = 'ainothing-gnm-v3';
+  const root = document.querySelector<HTMLElement>('[data-face-lab]')!;
+  const viewer = root.querySelector<HTMLElement>('[data-viewer]')!;
+  const loadingCard = root.querySelector<HTMLElement>('[data-loading-card]')!;
+  const loadButton = root.querySelector<HTMLButtonElement>('[data-load-model]')!;
+  const clearButton = root.querySelector<HTMLButtonElement>('[data-clear-model]')!;
+  const resetButton = root.querySelector<HTMLButtonElement>('[data-reset-view]')!;
+  const status = root.querySelector<HTMLElement>('[data-engine-status]')!;
+  const statusDot = root.querySelector<HTMLElement>('[data-status-dot]')!;
+  const progress = root.querySelector<HTMLElement>('[data-progress]')!;
+  const progressBar = root.querySelector<HTMLElement>('[data-progress-bar]')!;
+  const progressLabel = root.querySelector<HTMLElement>('[data-progress-label]')!;
+  const promptOutput = root.querySelector<HTMLElement>('[data-prompt-output]')!;
+  const expressionSelect = root.querySelector<HTMLSelectElement>('[data-expression]')!;
+  const expressionIntensity = root.querySelector<HTMLInputElement>('[data-expression-intensity]')!;
+  const parameters: Record<string, number> = { faceWidth: 0, faceLength: .12, forehead: 0, cheekbones: .15, jaw: -.05, chin: .1 };
+  let region = 'east-asian';
+  let faceShape = 'oval';
+  let worker: Worker | undefined;
+  let renderer: THREE.WebGLRenderer | undefined;
+  let camera: THREE.PerspectiveCamera | undefined;
+  let controls: OrbitControls | undefined;
+  let geometry: THREE.BufferGeometry | undefined;
+  let deformationFrame = 0;
+
+  const shapePresets: Record<string, Record<string, number>> = {
+    oval: { faceWidth: 0, faceLength: .12, forehead: 0, cheekbones: .15, jaw: -.05, chin: .1 },
+    round: { faceWidth: .58, faceLength: -.5, forehead: .28, cheekbones: .18, jaw: .25, chin: -.28 },
+    heart: { faceWidth: .06, faceLength: .08, forehead: .58, cheekbones: .45, jaw: -.5, chin: .6 },
+    square: { faceWidth: .4, faceLength: -.05, forehead: .3, cheekbones: .12, jaw: .72, chin: -.18 },
+    diamond: { faceWidth: -.12, faceLength: .2, forehead: -.38, cheekbones: .78, jaw: -.45, chin: .45 },
+    oblong: { faceWidth: -.32, faceLength: .72, forehead: -.12, cheekbones: .08, jaw: -.18, chin: .08 },
+  };
+
+  const descriptors: Record<string, (value: number) => string> = {
+    faceWidth: (v) => v > .25 ? 'a broad facial width' : v < -.25 ? 'a narrow facial width' : 'balanced facial width',
+    faceLength: (v) => v > .25 ? 'elongated vertical proportions' : v < -.25 ? 'compact vertical proportions' : 'balanced vertical proportions',
+    forehead: (v) => v > .25 ? 'a wider upper forehead' : v < -.25 ? 'a narrow forehead' : 'a balanced forehead',
+    cheekbones: (v) => v > .3 ? 'prominent high cheekbones' : v < -.2 ? 'soft subtle cheekbones' : 'gently defined cheekbones',
+    jaw: (v) => v > .25 ? 'a broad defined jaw' : v < -.25 ? 'a narrow tapered jaw' : 'a softly balanced jaw',
+    chin: (v) => v > .25 ? 'a refined tapered chin' : v < -.2 ? 'a softly rounded chin' : 'a balanced chin',
+  };
+
+  function expressionPhrase() {
+    const amount = Number(expressionIntensity.value);
+    const intensity = amount < 34 ? 'subtle' : amount > 70 ? 'pronounced' : 'natural';
+    const phrases: Record<string, string> = {
+      neutral: 'a calm neutral expression',
+      'subtle-smile': `a ${intensity} closed-mouth smile`,
+      happy: `a ${intensity} happy expression with lifted cheeks`,
+      serious: `a ${intensity} serious expression with relaxed lips`,
+      surprised: `a ${intensity} surprised expression with widened eyes and parted lips`,
+    };
+    return phrases[expressionSelect.value];
+  }
+
+  function updatePrompt() {
+    const regionLabel = region === 'east-asian' ? 'East Asian' : 'European';
+    const shapeLabel = faceShape === 'oblong' ? 'long oblong' : faceShape;
+    const details = Object.entries(parameters).map(([key, value]) => descriptors[key](value));
+    promptOutput.textContent = `A fictional adult ${regionLabel} woman, age 27, with a clearly readable ${shapeLabel}-shaped face: ${details.join(', ')}. She has ${expressionPhrase()}. Perfectly front-facing head-and-shoulders studio portrait, hair behind both ears, natural skin texture, matte black crew-neck top, soft centered key light, charcoal background, 85mm portrait lens, realistic anatomy and restrained editorial finish. No text, jewelry, watermark, childish styling, erotic styling, or resemblance to a real person.`;
+  }
+
+  function queueDeformation() {
+    cancelAnimationFrame(deformationFrame);
+    deformationFrame = requestAnimationFrame(() => worker?.postMessage({
+      type: 'deform',
+      parameters: { ...parameters, region, expression: expressionSelect.value, expressionIntensity: Number(expressionIntensity.value) },
+    }));
+  }
+
+  function setStatus(label: string, ready = false) {
+    status.textContent = label;
+    statusDot.classList.toggle('is-ready', ready);
+  }
+
+  async function getModelBuffer() {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(MODEL_URL);
+    if (cached) {
+      progress.hidden = false;
+      progressBar.style.transform = 'scaleX(1)';
+      progressLabel.textContent = 'Loaded from this browser’s local cache.';
+      return cached.arrayBuffer();
+    }
+    const response = await fetch(MODEL_URL);
+    if (!response.ok || !response.body) throw new Error(`Model download failed (${response.status})`);
+    const clone = response.clone();
+    const total = Number(response.headers.get('content-length')) || 53_305_389;
+    const reader = response.body.getReader();
+    const chunks: Uint8Array[] = [];
+    let received = 0;
+    progress.hidden = false;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      received += value.length;
+      const percent = Math.min(100, Math.round((received / total) * 100));
+      progressBar.style.transform = `scaleX(${percent / 100})`;
+      progressLabel.textContent = `Downloading locally · ${(received / 1048576).toFixed(1)} / ${(total / 1048576).toFixed(1)} MB`;
+    }
+    await cache.put(MODEL_URL, clone);
+    navigator.storage?.persist?.();
+    const bytes = new Uint8Array(received);
+    let offset = 0;
+    chunks.forEach((chunk) => { bytes.set(chunk, offset); offset += chunk.length; });
+    return bytes.buffer;
+  }
+
+  function initViewer(positions: Float32Array, indices: Uint32Array) {
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0d1018);
+    camera = new THREE.PerspectiveCamera(32, viewer.clientWidth / viewer.clientHeight, .01, 10);
+    camera.position.set(0, .255, .78);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(viewer.clientWidth, viewer.clientHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
+    viewer.prepend(renderer.domElement);
+
+    geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+    geometry.computeVertexNormals();
+    const material = new THREE.MeshPhysicalMaterial({ color: 0xbec5d6, roughness: .48, metalness: .04, clearcoat: .15, clearcoatRoughness: .7, side: THREE.DoubleSide });
+    const head = new THREE.Mesh(geometry, material);
+    scene.add(head);
+    scene.add(new THREE.HemisphereLight(0xb8c6ff, 0x11131b, 2.4));
+    const key = new THREE.DirectionalLight(0xffffff, 4.2); key.position.set(-.4, .5, .7); scene.add(key);
+    const rim = new THREE.DirectionalLight(0x6f78ff, 3.2); rim.position.set(.5, .25, -.4); scene.add(rim);
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, .255, .04);
+    controls.enableDamping = true;
+    controls.minDistance = .45;
+    controls.maxDistance = 1.3;
+    controls.update();
+    const animate = () => { controls?.update(); renderer?.render(scene, camera!); requestAnimationFrame(animate); };
+    animate();
+    const observer = new ResizeObserver(() => {
+      if (!renderer || !camera) return;
+      camera.aspect = viewer.clientWidth / viewer.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(viewer.clientWidth, viewer.clientHeight);
+    });
+    observer.observe(viewer);
+  }
+
+  async function loadModel() {
+    loadButton.disabled = true;
+    loadButton.textContent = 'Preparing local engine…';
+    setStatus('Downloading model');
+    try {
+      const buffer = await getModelBuffer();
+      progressLabel.textContent = 'Unpacking only the geometry required by this lab…';
+      worker = new Worker(new URL('../workers/gnm.worker.ts', import.meta.url), { type: 'module' });
+      worker.onmessage = (event) => {
+        if (event.data.type === 'ready') {
+          initViewer(event.data.positions, event.data.triangles);
+          loadingCard.classList.add('is-hidden');
+          clearButton.disabled = false;
+          resetButton.disabled = false;
+          setStatus(`${event.data.vertexCount.toLocaleString()} vertices · Ready`, true);
+          queueDeformation();
+        } else if (event.data.type === 'geometry' && geometry) {
+          geometry.setAttribute('position', new THREE.BufferAttribute(event.data.positions, 3));
+          geometry.computeVertexNormals();
+        } else if (event.data.type === 'error') throw new Error(event.data.message);
+      };
+      worker.postMessage({ type: 'load', buffer }, [buffer]);
+    } catch (error) {
+      loadButton.disabled = false;
+      loadButton.textContent = 'Retry model download';
+      progressLabel.textContent = error instanceof Error ? error.message : String(error);
+      setStatus('Engine load failed');
+    }
+  }
+
+  root.querySelectorAll<HTMLInputElement>('input[name="region"]').forEach((input) => input.addEventListener('change', () => { region = input.value; updatePrompt(); queueDeformation(); }));
+  root.querySelectorAll<HTMLButtonElement>('[data-shape]').forEach((button) => button.addEventListener('click', () => {
+    faceShape = button.dataset.shape!;
+    root.querySelectorAll('[data-shape]').forEach((item) => item.classList.toggle('is-active', item === button));
+    Object.assign(parameters, shapePresets[faceShape]);
+    Object.entries(parameters).forEach(([key, value]) => {
+      const input = root.querySelector<HTMLInputElement>(`[data-parameter="${key}"]`)!;
+      input.value = String(Math.round(value * 100));
+      root.querySelector<HTMLOutputElement>(`[data-output="${key}"]`)!.value = input.value;
+    });
+    updatePrompt(); queueDeformation();
+  }));
+  root.querySelectorAll<HTMLInputElement>('[data-parameter]').forEach((input) => input.addEventListener('input', () => {
+    parameters[input.dataset.parameter!] = Number(input.value) / 100;
+    root.querySelector<HTMLOutputElement>(`[data-output="${input.dataset.parameter}"]`)!.value = input.value;
+    faceShape = 'custom';
+    root.querySelectorAll('[data-shape]').forEach((item) => item.classList.remove('is-active'));
+    updatePrompt(); queueDeformation();
+  }));
+  expressionSelect.addEventListener('change', () => { updatePrompt(); queueDeformation(); });
+  expressionIntensity.addEventListener('input', () => {
+    root.querySelector<HTMLOutputElement>('[data-expression-output]')!.value = expressionIntensity.value;
+    updatePrompt(); queueDeformation();
+  });
+  loadButton.addEventListener('click', loadModel);
+  clearButton.addEventListener('click', async () => {
+    await caches.delete(CACHE_NAME);
+    clearButton.textContent = 'Removed from browser';
+    setTimeout(() => { clearButton.textContent = 'Clear local model'; }, 1800);
+  });
+  resetButton.addEventListener('click', () => { camera?.position.set(0, .255, .78); controls?.target.set(0, .255, .04); controls?.update(); });
+  root.querySelector<HTMLButtonElement>('[data-copy-prompt]')!.addEventListener('click', async (event) => {
+    await navigator.clipboard.writeText(promptOutput.textContent ?? '');
+    const button = event.currentTarget as HTMLButtonElement; button.textContent = 'Copied'; setTimeout(() => { button.textContent = 'Copy prompt'; }, 1600);
+  });
+  root.querySelector<HTMLButtonElement>('[data-save-json]')!.addEventListener('click', () => {
+    const payload = { subject: { adult: true, gender: 'woman', region }, geometry: { faceShape, ...parameters }, expression: { type: expressionSelect.value, intensity: Number(expressionIntensity.value) / 100 }, model: 'google-gnm-v3' };
+    const link = document.createElement('a'); link.href = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })); link.download = 'ainothing-face-parameters.json'; link.click(); URL.revokeObjectURL(link.href);
+  });
+
+  caches.open(CACHE_NAME).then((cache) => cache.match(MODEL_URL)).then((cached) => {
+    if (cached) { loadButton.textContent = 'Load cached GNM model'; progressLabel.textContent = 'Model found in this browser. No download required.'; clearButton.disabled = false; }
+  });
+  updatePrompt();
+</script>
+
+<style>
+  .face-lab{--lab-bg:#0c0f17;--lab-panel:#121722;--lab-line:rgba(255,255,255,.12);--lab-muted:#8991a4;--lab-white:#f3f5fb;min-height:780px;background:var(--lab-bg);color:var(--lab-white);border:1px solid #282d38;box-shadow:0 50px 120px rgba(17,21,33,.28)}
+  .lab-bar{height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;border-bottom:1px solid var(--lab-line)}.lab-bar>div{display:flex;align-items:center;gap:.8rem}.lab-bar p{display:grid;margin:0}.lab-bar b,.lab-bar small{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.05em}.lab-bar small{color:var(--lab-muted)}.status-dot{width:8px;height:8px;border:1px solid #8b92a3;border-radius:50%;transition:background 240ms ease,box-shadow 240ms ease}.status-dot.is-ready{border-color:var(--signal);background:var(--signal);box-shadow:0 0 16px rgba(185,255,102,.7)}
+  button,select,input{touch-action:manipulation}.quiet-button,.view-actions button{min-height:44px;padding:0 .8rem;border:1px solid var(--lab-line);background:transparent;color:var(--lab-white);font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase}.quiet-button:disabled,.view-actions button:disabled{cursor:not-allowed;opacity:.38}
+  .lab-layout{display:grid;grid-template-columns:280px minmax(420px,1fr) 340px;min-height:714px}.controls,.prompt-panel{padding:1.4rem;overflow:auto;background:rgba(18,23,34,.88)}.controls{border-right:1px solid var(--lab-line)}.prompt-panel{border-left:1px solid var(--lab-line)}
+  .control-heading{display:flex;gap:.8rem;align-items:center;margin:0 0 1rem;padding-top:1.2rem;border-top:1px solid var(--lab-line)}.control-heading:first-child{padding-top:0;border:0}.control-heading>span{display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--lab-line);font-family:var(--font-mono);font-size:.58rem;color:var(--signal)}.control-heading p,.control-heading small{margin:0}.control-heading p{font-size:.82rem;font-weight:600}.control-heading small{color:var(--lab-muted);font-size:.68rem}
+  fieldset{margin:0 0 1.4rem;padding:0;border:0}legend,.select-label,.expression-range,.sliders label{width:100%;color:var(--lab-muted);font-family:var(--font-mono);font-size:.58rem;letter-spacing:.07em;text-transform:uppercase}.segment-group{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}.segment-group legend{grid-column:1/-1;margin-bottom:.4rem}.segment-group label{position:relative}.segment-group input{position:absolute;opacity:0}.segment-group span,.shape-grid button{display:grid;place-items:center;min-height:44px;border:1px solid var(--lab-line);color:#c8cdd9;background:transparent;font-size:.64rem;cursor:pointer;transition:background 180ms ease,border-color 180ms ease,color 180ms ease}.segment-group input:checked+span,.shape-grid button.is-active{border-color:#7885ff;background:rgba(99,112,255,.16);color:#fff}.segment-group input:focus-visible+span{outline:3px solid rgba(99,112,255,.45);outline-offset:2px}
+  .shape-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-top:.45rem}.shape-grid button{font-family:var(--font-mono);text-transform:uppercase}.shape-grid button:hover{border-color:rgba(255,255,255,.4)}
+  .sliders{display:grid;gap:.85rem;margin-bottom:1.6rem}.sliders label,.expression-range{display:grid;grid-template-columns:1fr auto;gap:.2rem}.sliders output,.expression-range output{font-variant-numeric:tabular-nums;color:var(--signal)}input[type=range]{grid-column:1/-1;width:100%;height:20px;margin:0;accent-color:#7480ff;cursor:ew-resize}.select-label{display:grid;gap:.45rem}.select-label select{width:100%;min-height:44px;padding:0 .7rem;border:1px solid var(--lab-line);border-radius:0;background:#0d111a;color:#fff;font-size:.7rem}.expression-range{margin-top:.9rem}
+  .viewport-panel{min-width:0;background:#0d1018}.viewer{position:relative;height:660px;overflow:hidden;background:radial-gradient(circle at 50% 42%,#252c40 0,#10141e 42%,#0b0e15 75%)}.viewer::before{content:'';position:absolute;z-index:0;inset:0;background:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}.viewer canvas{position:absolute;z-index:1;inset:0}.loading-card{position:absolute;z-index:3;inset:50% auto auto 50%;width:min(420px,calc(100% - 2rem));padding:2rem;transform:translate(-50%,-50%);border:1px solid var(--lab-line);background:rgba(12,15,23,.9);backdrop-filter:blur(18px);transition:opacity 280ms ease,transform 380ms cubic-bezier(.16,1,.3,1)}.loading-card.is-hidden{opacity:0;transform:translate(-50%,-46%) scale(.98);pointer-events:none}.loading-card .overline{color:var(--signal)}.loading-card h2{margin:.8rem 0;color:#fff;font-size:clamp(2rem,4vw,3.2rem)}.loading-card>p:not(.overline){color:#aab1c0;font-size:.85rem}.loading-card button,.prompt-actions button{width:100%;min-height:48px;border:1px solid #7480ff;background:#6572f3;color:#fff;font-weight:600;transition:filter 120ms ease,transform 120ms ease}.loading-card button:active,.prompt-actions button:active{transform:scale(.985)}.loading-card button:disabled{cursor:wait;opacity:.65}.progress{height:3px;margin-top:1rem;overflow:hidden;background:rgba(255,255,255,.1)}.progress i{display:block;width:100%;height:100%;transform:scaleX(0);transform-origin:left;background:var(--signal);transition:transform 180ms ease}.loading-card small{display:block;margin-top:.7rem;color:var(--lab-muted);font-size:.64rem}.viewer-labels{position:absolute;z-index:2;inset:1rem 1rem auto;display:flex;justify-content:space-between;color:#818a9d;font-family:var(--font-mono);font-size:.55rem;text-transform:uppercase;pointer-events:none}.view-actions{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 1rem;border-top:1px solid var(--lab-line)}.view-actions span{display:flex;align-items:center;gap:.45rem;color:var(--lab-muted);font-family:var(--font-mono);font-size:.56rem;text-transform:uppercase}.view-actions i{width:6px;height:6px;border-radius:50%;background:var(--signal)}
+  .prompt-head{display:flex;justify-content:space-between;gap:1rem;padding-bottom:1.2rem;border-bottom:1px solid var(--lab-line)}.prompt-head .overline{margin:0;color:#8f99ff}.prompt-head h2{margin-top:.45rem;color:#fff;font-family:var(--font-body);font-size:1.25rem;letter-spacing:-.03em}.prompt-head>span{align-self:start;padding:.3rem .45rem;border:1px solid rgba(185,255,102,.35);color:var(--signal);font-family:var(--font-mono);font-size:.56rem;text-transform:uppercase}.prompt-output{min-height:290px;padding:1.25rem 0;color:#d2d7e2;font-size:.83rem;line-height:1.72}.prompt-actions{display:grid;gap:.55rem}.prompt-actions .secondary{border-color:var(--lab-line);background:transparent;color:#fff}.prompt-panel dl{margin:1.5rem 0 0}.prompt-panel dl>div{display:flex;justify-content:space-between;padding:.65rem 0;border-top:1px solid var(--lab-line);font-family:var(--font-mono);font-size:.56rem}.prompt-panel dt{color:var(--lab-muted)}.prompt-panel dd{margin:0}.license-note{margin-top:1.2rem;color:#727b8e;font-size:.62rem;line-height:1.5}
+  @media(max-width:1100px){.lab-layout{grid-template-columns:260px 1fr}.prompt-panel{grid-column:1/-1;border-top:1px solid var(--lab-line);border-left:0}.prompt-output{min-height:0}.prompt-actions{grid-template-columns:1fr 1fr}}
+  @media(max-width:760px){.face-lab{border-inline:0}.lab-bar{height:auto;min-height:66px;gap:.7rem}.lab-layout{display:flex;flex-direction:column}.viewport-panel{order:-1}.viewer{height:min(70svh,560px)}.controls,.prompt-panel{border:0;border-top:1px solid var(--lab-line)}.shape-grid{grid-template-columns:repeat(3,1fr)}.prompt-actions{grid-template-columns:1fr}.viewer-labels span:first-child{display:none}.loading-card{padding:1.35rem}.quiet-button{max-width:120px}.lab-bar small{display:none}}
+  @media(prefers-reduced-motion:reduce){.loading-card,.progress i{transition:none}}
+</style>
