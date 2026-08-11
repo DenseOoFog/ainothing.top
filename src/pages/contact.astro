@@ -1,0 +1,105 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout
+  title="Contact | AInothing.top"
+  description="Contact page for AInothing.top editorial questions, factual corrections, and partnership inquiries."
+>
+  <section class="contact-shell">
+    <div class="contact-intro">
+      <span class="section-label">Contact</span>
+      <h1>Editorial questions, corrections, and partnership notes.</h1>
+      <p class="lead">
+        AInothing.top is a small editorial project. The most useful messages are factual corrections,
+        better source links, and sharp suggestions for revenue case studies that deserve a teardown.
+      </p>
+    </div>
+
+    <div class="contact-grid">
+      <article class="contact-card card-surface">
+        <h2>Best reasons to reach out</h2>
+        <ul>
+          <li>A revenue number needs correction or better sourcing.</li>
+          <li>An article missed an important business-model constraint.</li>
+          <li>You have a public case study that fits the site's editorial lens.</li>
+          <li>You want to discuss a relevant sponsorship or partnership.</li>
+        </ul>
+      </article>
+
+      <article class="contact-card card-surface">
+        <h2>Current contact setup</h2>
+        <p>
+          A public contact channel has not been added to this build yet. Before launch, replace this section with the
+          preferred email address, form, or social profile for editorial communication.
+        </p>
+      </article>
+
+      <article class="contact-card card-surface full-width">
+        <h2>What helps most</h2>
+        <p>
+          When sending a correction or tip, include the original source, the claimed number, the time period,
+          and why the framing may be incomplete. Specific evidence is much more useful than general disagreement.
+        </p>
+      </article>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .contact-shell {
+    display: grid;
+    gap: 1.2rem;
+    padding: 1rem 0 0.8rem;
+  }
+
+  .contact-intro {
+    max-width: 52rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .lead {
+    font-size: 1.08rem;
+    color: var(--text);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .contact-card {
+    padding: 1.4rem;
+  }
+
+  .contact-card h2 {
+    margin-bottom: 0.6rem;
+    font-size: 1.2rem;
+  }
+
+  .contact-card p,
+  .contact-card li {
+    color: var(--text);
+  }
+
+  .contact-card ul {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 720px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .full-width {
+      grid-column: auto;
+    }
+  }
+</style>

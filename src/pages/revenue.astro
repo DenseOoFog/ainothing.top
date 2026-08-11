@@ -1,0 +1,404 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+import { getPostsByCategory, getRecentPosts } from '../lib/posts';
+
+const allPosts = await getCollection('blog');
+const revenuePosts = getPostsByCategory(allPosts, 'Revenue Breakdowns');
+const latestPost = revenuePosts[0];
+const featuredRevenuePosts = revenuePosts.filter((post) => post.data.featured).slice(0, 3);
+const supportingPosts = getRecentPosts(allPosts)
+  .filter((post) => post.data.category !== 'Revenue Breakdowns')
+  .slice(0, 3);
+const storyLanes = [
+  {
+    title: 'Software and micro-SaaS',
+    summary: 'Best for pricing, churn, acquisition mix, and what product quality really did for retention.',
+  },
+  {
+    title: 'Newsletter and audience businesses',
+    summary: 'Best for sponsorship economics, subscriber quality, paid conversion, and trust-based monetization.',
+  },
+  {
+    title: 'Niche media and affiliate sites',
+    summary: 'Best for search dependency, RPM quality, monetization stacking, and traffic fragility.',
+  },
+  {
+    title: 'Services, agencies, and solo operators',
+    summary: 'Best for deal size, founder labor, client concentration, and whether the business has room to systemize.',
+  },
+];
+---
+
+<MainLayout
+  title="Revenue Breakdowns | AInothing.top"
+  description="The AInothing.top revenue hub: evidence-based teardowns of who made money, what they sold, how traffic worked, and whether the model is repeatable."
+>
+  <section class="hero-shell">
+    <div class="hero-copy">
+      <span class="section-label">Core series</span>
+      <h1>The revenue breakdown hub.</h1>
+      <p class="hero-intro">
+        This is the center of AInothing.top: a growing archive of money stories translated into offer, traffic,
+        conversion, and repeatability. The goal is not just to admire numbers. The goal is to understand the engine.
+      </p>
+      <div class="hero-actions">
+        <a class="button-primary" href="/blog">Browse the full archive</a>
+        <a class="button-secondary" href="/about">Read the editorial rules</a>
+      </div>
+      <p class="hero-note">
+        Best use of this page: start with a headline that interests you, then scan for the actual bottleneck behind it.
+      </p>
+    </div>
+
+    <aside class="hero-proof card-surface">
+      <div class="proof-top">
+        <p class="kicker">What this section keeps proving</p>
+        <span class="proof-pill">Mechanics over screenshots</span>
+      </div>
+      <div class="proof-stats">
+        <div>
+          <span>Total breakdowns</span>
+          <strong>{revenuePosts.length}</strong>
+        </div>
+        <div>
+          <span>Featured</span>
+          <strong>{featuredRevenuePosts.length}</strong>
+        </div>
+      </div>
+      <ul class="proof-list">
+        <li>What exactly was sold?</li>
+        <li>Where did demand come from?</li>
+        <li>What made conversion work?</li>
+        <li>What part is realistically repeatable?</li>
+      </ul>
+      {latestPost && (
+        <a class="latest-proof" href={`/blog/${latestPost.id}/`}>
+          <span>Latest revenue story</span>
+          <strong>{latestPost.data.title}</strong>
+          <em>{latestPost.data.pubDate.toISOString().slice(0, 10)}</em>
+        </a>
+      )}
+    </aside>
+  </section>
+
+  <section class="section scorecard-grid">
+    <article class="editorial-card editorial-dark">
+      <p class="kicker">How to read the archive</p>
+      <h2>A great headline is only the start. Look for the constraint.</h2>
+      <p>
+        Two businesses can show the same monthly revenue and still be completely different underneath. The important
+        question is whether the machine depends on stable traffic, repeatable sales, and margin-friendly delivery — or on
+        founder effort, unusual timing, and one-off luck.
+      </p>
+    </article>
+
+    <article class="editorial-card card-surface">
+      <p class="kicker">Fast reading checklist</p>
+      <ol class="framework-list">
+        <li>
+          <strong>Offer</strong>
+          <p>Software, service, media, education, sponsorship, affiliate layer, or a hybrid stack.</p>
+        </li>
+        <li>
+          <strong>Demand</strong>
+          <p>Search, social, community, partnerships, paid acquisition, or an existing audience.</p>
+        </li>
+        <li>
+          <strong>Conversion</strong>
+          <p>Landing page, pricing, demos, email flow, sales call, trial loop, or trust asset.</p>
+        </li>
+        <li>
+          <strong>Repeatability</strong>
+          <p>Judge the real moat: brand, timing, skill, network, capital, or distribution advantage.</p>
+        </li>
+      </ol>
+    </article>
+  </section>
+
+  <section class="section lane-section">
+    <div class="section-head">
+      <div>
+        <p class="kicker">Coverage lanes</p>
+        <h2>The four revenue stories worth tracking most closely</h2>
+      </div>
+    </div>
+
+    <div class="lane-grid">
+      {storyLanes.map((lane) => (
+        <article class="lane-card card-surface">
+          <h3>{lane.title}</h3>
+          <p>{lane.summary}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section archive-section">
+    <div class="section-head">
+      <div>
+        <p class="kicker">Current archive</p>
+        <h2>All revenue breakdowns</h2>
+        <p class="section-copy">
+          Start here if you want the cleanest expression of the site’s point of view.
+        </p>
+      </div>
+    </div>
+
+    <div class="post-stack">
+      {revenuePosts.map((post) => (
+        <article class="post-card card-surface">
+          <div>
+            <span class="post-badge">{post.data.category}</span>
+            <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+            <p>{post.data.description}</p>
+          </div>
+          <div class="post-meta">
+            <strong>{post.data.pubDate.toISOString().slice(0, 10)}</strong>
+            <span>{post.data.tags.join(' · ')}</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section support-layout">
+    <div class="support-copy card-surface">
+      <p class="kicker">Why the other categories still matter</p>
+      <h2>Revenue stories get stronger when the surrounding context is sharp.</h2>
+      <p>
+        AI Signals, AI Tools, Growth Playbooks, and Solo Ops exist here to make the next money story easier to interpret.
+        They are supporting layers around the main editorial product, not a detour away from it.
+      </p>
+    </div>
+
+    <div class="support-posts">
+      {supportingPosts.map((post) => (
+        <article class="support-card card-surface">
+          <span>{post.data.category}</span>
+          <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+          <p>{post.data.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .hero-shell,
+  .scorecard-grid,
+  .lane-grid,
+  .support-layout {
+    display: grid;
+    gap: 1.15rem;
+  }
+
+  .hero-shell {
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+    align-items: stretch;
+    padding: 1rem 0 0.8rem;
+  }
+
+  .hero-copy {
+    padding: 1rem 0;
+  }
+
+  .hero-intro,
+  .section-copy {
+    max-width: 46rem;
+    font-size: 1.15rem;
+    color: var(--text);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.3rem 0 1rem;
+  }
+
+  .hero-note {
+    max-width: 44rem;
+    color: var(--muted);
+  }
+
+  .hero-proof,
+  .editorial-card,
+  .lane-card,
+  .post-card,
+  .support-copy,
+  .support-card {
+    padding: 1.4rem;
+  }
+
+  .proof-top,
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .proof-top {
+    margin-bottom: 1rem;
+  }
+
+  .proof-pill,
+  .post-badge,
+  .support-card span {
+    display: inline-block;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .proof-pill {
+    padding: 0.4rem 0.72rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+  }
+
+  .proof-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .proof-stats span,
+  .latest-proof span {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .proof-stats strong {
+    display: block;
+    margin-top: 0.28rem;
+    font-size: 1.65rem;
+    line-height: 1.15;
+    color: var(--heading);
+  }
+
+  .proof-list,
+  .framework-list,
+  .post-stack {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .proof-list li + li,
+  .framework-list li + li,
+  .post-stack article + article {
+    margin-top: 0.85rem;
+  }
+
+  .latest-proof {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: 1.1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .latest-proof em {
+    color: var(--muted);
+    font-size: 0.92rem;
+    font-style: normal;
+  }
+
+  .section {
+    margin-top: 2rem;
+  }
+
+  .scorecard-grid,
+  .support-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .editorial-dark {
+    border-radius: 32px;
+    background: linear-gradient(135deg, #08111f 0%, #14263c 100%);
+    color: rgba(244, 247, 251, 0.94);
+  }
+
+  .editorial-dark h2,
+  .editorial-dark p,
+  .editorial-dark .kicker {
+    color: inherit;
+  }
+
+  .framework-list li {
+    padding: 1rem;
+    border-radius: 18px;
+    background: rgba(83, 58, 253, 0.08);
+    border: 1px solid rgba(6, 27, 49, 0.08);
+  }
+
+  .framework-list strong,
+  .post-meta strong {
+    display: block;
+    margin-bottom: 0.28rem;
+  }
+
+  .lane-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lane-card h3,
+  .post-card h3,
+  .support-card h3 {
+    margin: 0.45rem 0;
+  }
+
+  .lane-card p,
+  .post-card p,
+  .support-card p,
+  .support-copy p,
+  .framework-list p {
+    margin-bottom: 0;
+  }
+
+  .archive-section .section-head {
+    margin-bottom: 1rem;
+  }
+
+  .post-card {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .post-meta {
+    min-width: 165px;
+    text-align: right;
+    color: var(--muted);
+    font-size: 0.94rem;
+  }
+
+  .support-posts {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (max-width: 960px) {
+    .hero-shell,
+    .scorecard-grid,
+    .lane-grid,
+    .support-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .post-card {
+      display: grid;
+    }
+
+    .post-meta {
+      min-width: 0;
+      text-align: left;
+    }
+  }
+</style>

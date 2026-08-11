@@ -1,0 +1,118 @@
+---
+import { siteConfig } from '../site.config';
+const today = new Date();
+---
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-statement">
+      <p class="overline">AInothing / Field studio</p>
+      <h2>Keep the useful parts.</h2>
+      <p>{siteConfig.footer}</p>
+    </div>
+
+    <nav aria-label="Footer navigation">
+      <div><span>Explore</span><a href="/tools">Local tools</a><a href="/resources">Prompt Lab</a></div>
+      <div><span>Read</span><a href="/blog">Tutorials</a><a href="/blog">AI briefs</a></div>
+      <div><span>Studio</span><a href="/about">About</a><a href="/privacy">Privacy</a><a href="/contact">Contact</a></div>
+    </nav>
+
+    <div class="footer-meta">
+      <span>© {today.getFullYear()} {siteConfig.author}</span>
+      <span>Built with Astro · English edition</span>
+      <a href="/rss.xml">RSS</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    padding: 0 1.5rem 1.5rem;
+  }
+
+  .footer-inner {
+    width: min(var(--max-width), 100%);
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4.5rem);
+    background: var(--foreground);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .footer-statement {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 4rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .overline {
+    grid-column: 1 / -1;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    color: #fff;
+    font-size: clamp(2.4rem, 5vw, 5rem);
+    font-style: italic;
+  }
+
+  .footer-statement > p:last-child {
+    max-width: 34rem;
+    align-self: end;
+    margin: 0;
+  }
+
+  nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    padding: 3rem 0;
+  }
+
+  nav div {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  nav span {
+    margin-bottom: 0.45rem;
+    color: rgba(255, 255, 255, 0.42);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  nav a,
+  .footer-meta a {
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  nav a:hover,
+  .footer-meta a:hover {
+    color: var(--signal);
+  }
+
+  .footer-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 700px) {
+    footer { padding: 0; }
+    .footer-statement { grid-template-columns: 1fr; }
+    nav { grid-template-columns: 1fr 1fr; }
+  }
+</style>

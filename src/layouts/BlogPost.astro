@@ -1,0 +1,138 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+
+type Props = CollectionEntry<'blog'>['data'];
+
+const { title, description, pubDate, updatedDate, heroImage, category, tags } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <BaseHead title={title} description={description} />
+    <style>
+      .article-shell {
+        width: min(860px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 2.2rem 0 4.5rem;
+      }
+
+      .article-card {
+        padding: 1.6rem;
+      }
+
+      .article-top {
+        margin-bottom: 1.6rem;
+      }
+
+      .category {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.35rem 0.72rem;
+        border-radius: 999px;
+        border: 1px solid var(--accent-border);
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--accent);
+        font-size: 0.84rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .headline {
+        margin-top: 1rem;
+        max-width: 12ch;
+      }
+
+      .deck {
+        max-width: 52rem;
+        font-size: 1.12rem;
+        color: var(--muted);
+      }
+
+      .meta {
+        margin-top: 1rem;
+      }
+
+      .hero-image {
+        margin: 1.4rem 0 1.8rem;
+      }
+
+      .hero-image img {
+        display: block;
+        width: 100%;
+        border-radius: 24px;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .prose {
+        color: var(--text);
+      }
+
+      .prose h2,
+      .prose h3 {
+        margin-top: 2rem;
+      }
+
+      .tags {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+
+      .tags span {
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 720px) {
+        .article-shell {
+          width: min(860px, calc(100% - 1rem));
+          padding-top: 1.4rem;
+        }
+
+        .article-card {
+          padding: 1.1rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <Header />
+    <main class="article-shell">
+      <article class="article-card card-surface">
+        <div class="article-top">
+          <span class="category">{category}</span>
+          <h1 class="headline">{title}</h1>
+          <p class="deck">{description}</p>
+          <div class="meta meta-row">
+            <span>Published {pubDate.toISOString().slice(0, 10)}</span>
+            {updatedDate && <span>Updated {updatedDate.toISOString().slice(0, 10)}</span>}
+          </div>
+        </div>
+
+        <div class="hero-image">
+          {heroImage && <img src={heroImage.src} alt={title} />}
+        </div>
+
+        <div class="prose">
+          <slot />
+        </div>
+
+        {tags.length > 0 && (
+          <div class="tags">
+            {tags.map((tag) => <span>#{tag}</span>)}
+          </div>
+        )}
+      </article>
+    </main>
+    <Footer />
+  </body>
+</html>

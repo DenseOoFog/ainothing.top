@@ -1,0 +1,66 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Prompt Lab | AInothing" description="Tested AIGC prompt systems organized by model, task, variables, and generated results.">
+  <section class="resource-hero shell">
+    <p class="overline" data-reveal>Resource library / Prompt Lab</p>
+    <div class="resource-title" data-reveal>
+      <h1>Prompt<br /><em>Lab.</em></h1>
+      <p>Prompt studies with a traceable structure: model, variables, input, output, date tested, and what changed.</p>
+    </div>
+    <div class="lab-standard" data-reveal>
+      <span>Admission standard</span>
+      <ul><li>Actually generated</li><li>Variables are reusable</li><li>Results stay attached</li></ul>
+    </div>
+  </section>
+
+  <section class="studies shell">
+    <div class="section-line" data-reveal><p class="overline">Current studies / 01</p><span>One focused collection at a time</span></div>
+    <a class="study" href="/prompts/portrait-atlas" data-reveal>
+      <div class="study-art" aria-hidden="true"><span></span><span></span><i>001</i></div>
+      <div class="study-copy">
+        <p class="overline">GPT Image 2 / Adult portrait research</p>
+        <h2>Portrait Atlas</h2>
+        <p>Asian and European adult women, mapped from face architecture to body silhouette, styling, camera, and light.</p>
+        <div><span>Face</span><span>Features</span><span>Hair</span><span>Body</span><span>Camera</span></div>
+      </div>
+      <b>Open study ↗</b>
+    </a>
+
+    <div class="next-study" data-reveal>
+      <p class="overline">Next studies</p>
+      <p>New categories will be added only after the portrait taxonomy and result quality are solid.</p>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .resource-hero { padding: clamp(4rem,8vw,8rem) 0; }
+  .resource-title { display: grid; grid-template-columns: 1.35fr .65fr; gap: 3rem; align-items: end; padding: 2.2rem 0 3rem; border-bottom: 1px solid var(--foreground); }
+  h1 { font-size: clamp(5rem,14vw,13rem); line-height: .72; }
+  h1 em { color: var(--secondary); font-weight: 500; }
+  .resource-title > p { max-width: 30rem; margin: 0; color: var(--muted-text); font-size: 1.1rem; }
+  .lab-standard { display: grid; grid-template-columns: 1fr 2fr; padding: 2rem 0; }
+  .lab-standard > span { font-family: var(--font-mono); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; }
+  .lab-standard ul { display: flex; flex-wrap: wrap; gap: 1rem 3rem; margin: 0; padding: 0; list-style: none; }
+  .lab-standard li::before { content: '—'; margin-right: .7rem; color: var(--secondary); }
+  .studies { padding-bottom: clamp(5rem,10vw,9rem); }
+  .section-line { display: flex; justify-content: space-between; padding: 1rem 0; border-top: 1px solid var(--foreground); color: var(--muted-text); }
+  .section-line > p { margin: 0; }
+  .section-line span { font-size: .8rem; }
+  .study { display: grid; grid-template-columns: .8fr 1fr auto; gap: clamp(2rem,5vw,5rem); align-items: center; padding: clamp(2rem,5vw,5rem); background: var(--foreground); color: #fff; }
+  .study-art { position: relative; min-height: 420px; display: grid; place-items: center; background: radial-gradient(circle, rgba(65,94,255,.5), transparent 48%), #171c2b; border: 1px solid rgba(255,255,255,.18); overflow: hidden; }
+  .study-art span { position: absolute; width: 55%; aspect-ratio: .72; border: 1px solid rgba(255,255,255,.72); border-radius: 46% 46% 48% 48% / 38% 38% 58% 58%; }
+  .study-art span:nth-child(2) { width: 76%; aspect-ratio: 1; border-radius: 50%; border-color: rgba(185,255,102,.38); }
+  .study-art i { position: absolute; left: 1rem; bottom: 1rem; color: var(--signal); font-family: var(--font-mono); font-size: .68rem; font-style: normal; }
+  .study-copy .overline { color: var(--signal); }
+  .study-copy h2 { margin: 1.1rem 0 1.4rem; color: #fff; }
+  .study-copy > p:not(.overline) { color: rgba(255,255,255,.63); }
+  .study-copy > div { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 2rem; }
+  .study-copy > div span { padding: .35rem .55rem; border: 1px solid rgba(255,255,255,.28); font-family: var(--font-mono); font-size: .58rem; text-transform: uppercase; }
+  .study > b { align-self: end; font-size: .76rem; font-weight: 500; }
+  .next-study { display: grid; grid-template-columns: .5fr 1fr; padding: 3rem 0; border-bottom: 1px solid var(--border); }
+  .next-study p:last-child { max-width: 34rem; color: var(--muted-text); }
+  @media(max-width:800px){ .resource-title,.study { grid-template-columns:1fr; } .lab-standard,.next-study{grid-template-columns:1fr;gap:1rem}.study-art{min-height:350px}.study>b{justify-self:start} }
+</style>

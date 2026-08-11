@@ -1,0 +1,99 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout
+  title="Privacy | AInothing.top"
+  description="Privacy policy for AInothing.top, including analytics, hosting logs, and how editorial correspondence is handled."
+>
+  <section class="policy-shell">
+    <div class="policy-intro">
+      <span class="section-label">Privacy policy</span>
+      <h1>Simple policy for a small editorial site.</h1>
+      <p class="lead">
+        AInothing.top is an informational website about AI, online businesses, and revenue case studies.
+        If you voluntarily send a message to the site owner, that information is used only to review the
+        message, reply when appropriate, and keep a basic editorial record of the exchange.
+      </p>
+    </div>
+
+    <div class="policy-grid">
+      <article class="policy-card card-surface">
+        <h2>What data may exist</h2>
+        <p>
+          Like most websites, the live host may record standard technical data such as IP address, browser type,
+          referring page, and request timing for security, reliability, and performance monitoring.
+        </p>
+      </article>
+
+      <article class="policy-card card-surface">
+        <h2>Analytics and feeds</h2>
+        <p>
+          AInothing.top may use lightweight analytics or RSS distribution tools to understand readership at an aggregate level.
+          This is intended to improve the editorial product, not to build detailed personal profiles.
+        </p>
+      </article>
+
+      <article class="policy-card card-surface">
+        <h2>Advertising and third parties</h2>
+        <p>
+          If advertising, embeds, or other third-party services are added later, those providers may use their own cookies
+          or measurement technologies according to their policies. This page should be updated if the site begins using them.
+        </p>
+      </article>
+
+      <article class="policy-card card-surface">
+        <h2>Contact and updates</h2>
+        <p>
+          Because this is a small editorial project, the policy is intentionally short. If the site's data practices change,
+          the page should be revised so readers can see the new scope clearly.
+        </p>
+      </article>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .policy-shell {
+    display: grid;
+    gap: 1.2rem;
+    padding: 1rem 0 0.8rem;
+  }
+
+  .policy-intro {
+    max-width: 52rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .lead {
+    font-size: 1.08rem;
+    color: var(--text);
+  }
+
+  .policy-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .policy-card {
+    padding: 1.4rem;
+  }
+
+  .policy-card h2 {
+    margin-bottom: 0.6rem;
+    font-size: 1.2rem;
+  }
+
+  .policy-card p {
+    margin: 0;
+    color: var(--text);
+  }
+
+  @media (max-width: 720px) {
+    .policy-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

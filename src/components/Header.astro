@@ -1,0 +1,138 @@
+---
+import { siteConfig } from '../site.config';
+import HeaderLink from './HeaderLink.astro';
+---
+
+<header class="site-header">
+  <nav aria-label="Main navigation">
+    <a href="/" class="brand" aria-label="AInothing home">
+      <span class="brand-mark" aria-hidden="true">AI</span>
+      <span class="brand-copy">
+        <strong>{siteConfig.title}</strong>
+        <small>{siteConfig.tagline}</small>
+      </span>
+    </a>
+
+    <div class="nav-links">
+      {siteConfig.navigation.map((item) => (
+        <HeaderLink href={item.href}>{item.label}</HeaderLink>
+      ))}
+    </div>
+
+    <a class="nav-cta" href="/resources">
+      Explore the lab
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-4 4 4-4 4" /></svg>
+    </a>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+    background: color-mix(in srgb, var(--background) 88%, transparent);
+    backdrop-filter: blur(18px);
+  }
+
+  nav {
+    width: min(var(--max-width), calc(100% - 3rem));
+    min-height: 78px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.78rem;
+    color: var(--foreground);
+  }
+
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    aspect-ratio: 1;
+    border: 1px solid var(--foreground);
+    font-family: var(--font-display);
+    font-size: 0.96rem;
+    font-style: italic;
+  }
+
+  .brand-copy {
+    display: grid;
+    line-height: 1;
+  }
+
+  .brand-copy strong {
+    color: var(--foreground);
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .brand-copy small {
+    margin-top: 0.35rem;
+    color: var(--muted-text);
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.15rem;
+  }
+
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.7rem 0.95rem;
+    border: 1px solid var(--foreground);
+    color: var(--foreground);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .nav-cta svg {
+    width: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .nav-cta:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  @media (max-width: 900px) {
+    nav {
+      grid-template-columns: 1fr auto;
+      width: min(var(--max-width), calc(100% - 1.5rem));
+    }
+
+    .nav-links {
+      display: none;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .brand-copy small,
+    .nav-cta svg {
+      display: none;
+    }
+
+    .nav-cta {
+      padding: 0.65rem 0.78rem;
+    }
+  }
+</style>

@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://ainothing.top/sitemap.xml
-Sitemap: https://ainothing.top/sitemap-index.xml

@@ -1,0 +1,358 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { siteConfig } from '../site.config';
+---
+
+<MainLayout title="About | AInothing.top" description="About AInothing.top, the editorial method behind its AI and internet-business revenue breakdowns, and the publishing system that keeps the archive useful.">
+  <section class="hero-shell">
+    <div class="hero-copy">
+      <span class="section-label">About the project</span>
+      <p class="hero-site">{siteConfig.title}</p>
+      <h1>A long-term editorial project built around believable money stories.</h1>
+      <p class="hero-intro">
+        AInothing.top is a personal publishing system for AI, online business, and internet-media case studies.
+        The headline can be punchy, but the real product is the teardown: what was sold, where attention came from,
+        how conversion happened, and whether the result is something a normal operator could actually reproduce.
+      </p>
+      <div class="hero-actions">
+        <a class="button-primary" href="/revenue">Open the revenue hub</a>
+        <a class="button-secondary" href="/blog">Browse the archive</a>
+      </div>
+      <p class="hero-note">
+        Current publishing rhythm: one flagship revenue teardown each week, surrounded by supporting AI, tools,
+        growth, and solo-ops posts that sharpen the next breakdown.
+      </p>
+    </div>
+
+    <aside class="hero-proof card-surface">
+      <div class="proof-top">
+        <p class="kicker">What the site is trying to become</p>
+        <span class="proof-pill">Pattern library, not hype feed</span>
+      </div>
+      <ul class="proof-list">
+        <li>Collect revenue stories readers already want to click.</li>
+        <li>Translate those stories into reusable business patterns.</li>
+        <li>Say clearly when the answer is “interesting, but not repeatable.”</li>
+      </ul>
+      <div class="proof-block">
+        <span>Editorial lens</span>
+        <strong>Offer → Traffic → Conversion → Repeatability</strong>
+      </div>
+    </aside>
+  </section>
+
+  <section class="section operating-grid">
+    <article class="editorial-card editorial-dark">
+      <p class="kicker">Core thesis</p>
+      <h2>The money number earns attention. The mechanism earns trust.</h2>
+      <p>
+        A flashy screenshot is useful because it creates curiosity. But a serious site cannot stop there.
+        The point of AInothing.top is to convert internet-business curiosity into grounded analysis that helps a
+        reader judge business quality, not just admire the top line.
+      </p>
+    </article>
+
+    <article class="editorial-card card-surface">
+      <p class="kicker">Why this angle works</p>
+      <ul class="signal-list">
+        <li><strong>AI gives new leverage.</strong> New tools change what one person can build, ship, and sell.</li>
+        <li><strong>Money stories travel.</strong> “Who made how much” is still one of the cleanest hooks on the internet.</li>
+        <li><strong>Readers want reality checks.</strong> Most people are tired of fake hustle screenshots without context.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="section principles-section">
+    <div class="section-head">
+      <div>
+        <p class="kicker">Editorial rules</p>
+        <h2>What every strong article should do</h2>
+      </div>
+    </div>
+
+    <div class="principles-grid">
+      <article class="principle-card card-surface">
+        <span>01</span>
+        <h3>Source the number</h3>
+        <p>Use screenshots, interviews, product pages, filings, pricing pages, or multiple public references whenever possible.</p>
+      </article>
+      <article class="principle-card card-surface">
+        <span>02</span>
+        <h3>Name the business model</h3>
+        <p>Readers should know whether the revenue came from software, services, sponsorships, education, affiliate income, or a stack of layers.</p>
+      </article>
+      <article class="principle-card card-surface">
+        <span>03</span>
+        <h3>Explain the funnel</h3>
+        <p>Break down the path from attention to trust to transaction, including pricing, sales motion, and key assets.</p>
+      </article>
+      <article class="principle-card card-surface">
+        <span>04</span>
+        <h3>Judge repeatability honestly</h3>
+        <p>Call out whether the outcome depends on personal brand, distribution moat, timing, technical skill, or unusual capital.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section coverage-layout">
+    <div class="coverage-copy">
+      <p class="kicker">Coverage map</p>
+      <h2>Revenue breakdowns are the main product. The other categories exist to support them.</h2>
+      <p>
+        The site is intentionally shaped like an editorial system. Revenue stories sit in the center, while AI Signals,
+        AI Tools, Growth Playbooks, and Solo Ops give the archive timing, operational context, and practical lessons.
+      </p>
+    </div>
+
+    <div class="coverage-board card-surface">
+      <ul class="coverage-list">
+        <li><span>Revenue Breakdowns</span><strong>Main attraction: who earned what and how the machine worked</strong></li>
+        <li><span>AI Signals</span><strong>Track market shifts that create new offers, demand, or distribution</strong></li>
+        <li><span>AI Tools</span><strong>Separate real workflow leverage from shallow product marketing</strong></li>
+        <li><span>Growth Playbooks</span><strong>Document how traffic, audience, and retention systems actually compound</strong></li>
+        <li><span>Solo Ops</span><strong>Show what one-person operators can sustain before complexity breaks them</strong></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section system-grid">
+    <article class="system-card card-surface">
+      <p class="kicker">Maintenance system</p>
+      <h2>How to keep the blog consistent over time</h2>
+      <ol class="workflow-list">
+        <li>Capture interesting revenue claims, new AI product launches, and business-model shifts throughout the week.</li>
+        <li>Publish one flagship revenue teardown that can anchor traffic and editorial identity.</li>
+        <li>Use shorter supporting posts to answer the obvious second-order questions: tool edge, growth motion, or operator constraint.</li>
+        <li>Keep improving the archive so readers can move from one case study to a broader pattern.</li>
+      </ol>
+    </article>
+
+    <article class="system-card card-surface">
+      <p class="kicker">Writing voice</p>
+      <h2>Punchy, specific, and slightly skeptical.</h2>
+      <ul class="signal-list compact-list">
+        <li>Lead with the number, then define what the number really means.</li>
+        <li>Prefer “what it depends on,” “without getting fooled,” and “before calling it passive” over empty hype language.</li>
+        <li>End with a verdict the reader can use: durable, fragile, or founder-specific.</li>
+      </ul>
+    </article>
+  </section>
+</MainLayout>
+
+<style>
+  .hero-shell,
+  .operating-grid,
+  .principles-grid,
+  .coverage-layout,
+  .system-grid {
+    display: grid;
+    gap: 1.15rem;
+  }
+
+  .hero-shell {
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+    align-items: stretch;
+    padding: 1rem 0 0.8rem;
+  }
+
+  .hero-copy {
+    padding: 1rem 0;
+  }
+
+  .hero-site {
+    margin: 1rem 0 0.55rem;
+    color: var(--muted);
+    font-size: 0.98rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hero-intro {
+    max-width: 47rem;
+    margin-bottom: 1.4rem;
+    color: var(--text);
+    font-size: 1.16rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-note {
+    max-width: 45rem;
+    color: var(--muted);
+  }
+
+  .hero-proof,
+  .editorial-card,
+  .principle-card,
+  .coverage-board,
+  .system-card {
+    padding: 1.4rem;
+  }
+
+  .proof-top,
+  .section-head,
+  .coverage-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .proof-top {
+    margin-bottom: 1rem;
+  }
+
+  .proof-pill,
+  .principle-card span {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.72rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .proof-list,
+  .signal-list,
+  .coverage-list,
+  .workflow-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .proof-list li,
+  .signal-list li {
+    position: relative;
+    padding-left: 1rem;
+  }
+
+  .proof-list li::before,
+  .signal-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  .proof-list li + li,
+  .signal-list li + li,
+  .coverage-list li + li,
+  .workflow-list li + li {
+    margin-top: 0.85rem;
+  }
+
+  .proof-block {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .proof-block span,
+  .coverage-list span {
+    display: inline-block;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .proof-block strong,
+  .coverage-list strong {
+    display: block;
+    margin-top: 0.3rem;
+  }
+
+  .section {
+    margin-top: 2rem;
+  }
+
+  .operating-grid,
+  .system-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .editorial-dark {
+    border-radius: 32px;
+    background: linear-gradient(135deg, #08111f 0%, #14263c 100%);
+    color: rgba(244, 247, 251, 0.94);
+  }
+
+  .editorial-dark h2,
+  .editorial-dark p,
+  .editorial-dark .kicker {
+    color: inherit;
+  }
+
+  .principles-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .principle-card h3,
+  .system-card h2 {
+    margin-top: 0.8rem;
+  }
+
+  .coverage-layout {
+    align-items: stretch;
+  }
+
+  .coverage-copy {
+    max-width: 42rem;
+  }
+
+  .coverage-board {
+    height: fit-content;
+  }
+
+  .workflow-list {
+    counter-reset: workflow;
+  }
+
+  .workflow-list li {
+    position: relative;
+    padding-left: 2.4rem;
+    counter-increment: workflow;
+  }
+
+  .workflow-list li::before {
+    content: counter(workflow);
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    width: 1.55rem;
+    height: 1.55rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+
+  .compact-list li + li {
+    margin-top: 0.7rem;
+  }
+
+  @media (max-width: 960px) {
+    .hero-shell,
+    .operating-grid,
+    .principles-grid,
+    .coverage-layout,
+    .system-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

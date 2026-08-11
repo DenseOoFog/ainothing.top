@@ -1,0 +1,414 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+import { siteConfig } from '../site.config';
+import { getRecentPosts } from '../lib/posts';
+
+const allPosts = await getCollection('blog');
+const recentPosts = getRecentPosts(allPosts, 3);
+---
+
+<MainLayout title={siteConfig.title} description={siteConfig.description}>
+  <section class="hero shell">
+    <div class="hero-top" data-reveal>
+      <p class="overline">{siteConfig.home.eyebrow}</p>
+      <p class="edition">Independent / useful / tested</p>
+    </div>
+
+    <div class="hero-title" data-reveal>
+      <h1>AI<span>nothing</span></h1>
+      <div class="hero-orbit" aria-hidden="true">
+        <i></i><i></i><i></i>
+        <b>01</b>
+      </div>
+    </div>
+
+    <div class="hero-bottom" data-reveal>
+      <h2>{siteConfig.home.title}</h2>
+      <div class="hero-intro">
+        <p>{siteConfig.home.intro}</p>
+        <div class="hero-actions">
+          <a class="primary-action" href="/resources">Enter the field studio <span>→</span></a>
+          <a class="text-action" href="#work">See what lives here</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="manifesto" aria-label="Editorial promise">
+    <div class="shell manifesto-inner" data-reveal>
+      <p class="overline">The filter / not the feed</p>
+      <p>{siteConfig.home.promise}</p>
+      <span>Tools · Prompts · Tutorials · Signals</span>
+    </div>
+  </section>
+
+  <section class="work shell" id="work">
+    <header class="section-head" data-reveal>
+      <div>
+        <p class="overline">What lives here / 01</p>
+        <h2>Four useful layers.</h2>
+      </div>
+      <p>Each part has one job. Together they turn AI noise into things you can actually use.</p>
+    </header>
+
+    <div class="work-list">
+      <a href="/tools" class="work-row tool-row" data-reveal>
+        <span class="work-index">01</span>
+        <div><p class="overline">Private browser utilities</p><h3>Local Tools</h3></div>
+        <p>Small, focused utilities that process files and text in your browser—without shipping your work elsewhere.</p>
+        <span class="work-arrow">↗</span>
+      </a>
+
+      <a href="/resources" class="work-row prompt-row" data-reveal>
+        <span class="work-index">02</span>
+        <div><p class="overline">Tested prompt systems</p><h3>Prompt Lab</h3></div>
+        <p>Prompt research organized by task and visual variable, with inputs, results, model versions, and honest notes.</p>
+        <span class="work-arrow">↗</span>
+      </a>
+
+      <a href="/blog" class="work-row tutorial-row" data-reveal>
+        <span class="work-index">03</span>
+        <div><p class="overline">Made from real builds</p><h3>Tutorials</h3></div>
+        <p>Original walkthroughs for browser AI, AIGC workflows, websites, models, and the mistakes between idea and release.</p>
+        <span class="work-arrow">↗</span>
+      </a>
+
+      <a href="/blog" class="work-row brief-row" data-reveal>
+        <span class="work-index">04</span>
+        <div><p class="overline">Only changes that matter</p><h3>AI Briefs</h3></div>
+        <p>Selected model and product updates translated into practical consequences for makers and creators.</p>
+        <span class="work-arrow">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="lab-feature">
+    <div class="shell lab-grid">
+      <div class="lab-copy" data-reveal>
+        <p class="overline">Inside Prompt Lab / Study 001</p>
+        <h2>One face.<br /><em>Many variables.</em></h2>
+        <p>
+          Our first GPT Image 2 study maps adult women’s portrait prompts from face shape and features through hair,
+          body silhouette, styling, light, and camera language.
+        </p>
+        <a class="arrow-link" href="/prompts/portrait-atlas">Open the portrait atlas</a>
+      </div>
+
+      <div class="lab-visual" data-reveal aria-label="Portrait prompt variable preview">
+        <div class="face-map" aria-hidden="true">
+          <span class="face-line line-one"></span>
+          <span class="face-line line-two"></span>
+          <span class="face-line line-three"></span>
+          <span class="face-eye eye-left"></span>
+          <span class="face-eye eye-right"></span>
+          <span class="face-mouth"></span>
+        </div>
+        <ol>
+          <li><span>01</span> Region & age</li>
+          <li><span>02</span> Face architecture</li>
+          <li><span>03</span> Features & texture</li>
+          <li><span>04</span> Hair & silhouette</li>
+          <li><span>05</span> Styling & camera</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="latest shell">
+    <header class="section-head" data-reveal>
+      <div><p class="overline">Field notes / 02</p><h2>Recently tested.</h2></div>
+      <a class="arrow-link" href="/blog">Read the archive</a>
+    </header>
+
+    <div class="latest-list">
+      {recentPosts.map((post, index) => (
+        <a href={`/blog/${post.id}/`} class="latest-row" data-reveal>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <div>
+            <p class="overline">{post.data.category} / {post.data.pubDate.toISOString().slice(0, 10)}</p>
+            <h3>{post.data.title}</h3>
+          </div>
+          <p>{post.data.description}</p>
+          <b aria-hidden="true">→</b>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="closing shell" data-reveal>
+    <p class="overline">A quiet rule for a noisy industry</p>
+    <p>If it cannot help someone make, understand, or decide something, it does not belong here.</p>
+    <a href="/about">Read the studio principles <span>↗</span></a>
+  </section>
+</MainLayout>
+
+<style>
+  .hero {
+    min-height: calc(100svh - 79px);
+    padding: 2rem 0 3rem;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .hero-top,
+  .hero-bottom,
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .edition {
+    margin: 0;
+    color: var(--muted-text);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hero-title {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+    overflow: hidden;
+  }
+
+  .hero-title h1 {
+    position: relative;
+    z-index: 2;
+    font-size: clamp(5.5rem, 17vw, 15rem);
+    line-height: 0.72;
+    letter-spacing: -0.085em;
+  }
+
+  .hero-title h1 span {
+    display: block;
+    margin-left: clamp(2rem, 14vw, 12rem);
+    color: var(--secondary);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .hero-orbit {
+    position: absolute;
+    right: 2%;
+    top: 50%;
+    width: clamp(180px, 25vw, 360px);
+    aspect-ratio: 1;
+    transform: translateY(-50%);
+  }
+
+  .hero-orbit i {
+    position: absolute;
+    inset: 0;
+    border: 1px solid color-mix(in srgb, var(--foreground) 42%, transparent);
+    border-radius: 50%;
+  }
+
+  .hero-orbit i:nth-child(2) { transform: rotate(60deg) scaleY(0.42); }
+  .hero-orbit i:nth-child(3) { transform: rotate(-60deg) scaleY(0.42); }
+  .hero-orbit b {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 400;
+  }
+
+  .hero-bottom {
+    align-items: end;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--foreground);
+  }
+
+  .hero-bottom h2 {
+    max-width: 8ch;
+    font-family: var(--font-body);
+    font-size: clamp(1.55rem, 3vw, 3.1rem);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.045em;
+  }
+
+  .hero-intro {
+    width: min(48rem, 58%);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 2rem;
+  }
+
+  .hero-intro > p {
+    max-width: 36rem;
+    margin: 0;
+    color: var(--muted-text);
+    font-size: clamp(1rem, 1.35vw, 1.22rem);
+  }
+
+  .hero-actions { display: grid; gap: 0.6rem; }
+  .primary-action,
+  .text-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 46px;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .primary-action { min-width: 210px; background: var(--foreground); color: #fff; }
+  .primary-action:hover { background: var(--secondary); color: #fff; }
+  .text-action { color: var(--foreground); border-bottom: 1px solid var(--border); }
+
+  .manifesto {
+    background: var(--signal);
+  }
+
+  .manifesto-inner {
+    min-height: 180px;
+    display: grid;
+    grid-template-columns: 0.65fr 2fr 1fr;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .manifesto-inner > p:nth-child(2) {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 3.15rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+  }
+
+  .manifesto-inner span {
+    justify-self: end;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .work,
+  .latest {
+    padding: clamp(5rem, 10vw, 9rem) 0;
+  }
+
+  .section-head {
+    align-items: end;
+    margin-bottom: 3.5rem;
+  }
+
+  .section-head > div .overline { margin-bottom: 1.1rem; color: var(--muted-text); }
+  .section-head > p { max-width: 33rem; margin: 0; color: var(--muted-text); }
+
+  .work-list { border-top: 1px solid var(--foreground); }
+  .work-row {
+    display: grid;
+    grid-template-columns: 64px minmax(220px, 0.75fr) minmax(280px, 1fr) 40px;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: 154px;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--foreground);
+    overflow: hidden;
+  }
+  .work-row:hover { padding-inline: 1rem; background: var(--paper); }
+  .work-index { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted-text); }
+  .work-row .overline { color: var(--muted-text); }
+  .work-row h3 { margin-top: 0.45rem; }
+  .work-row > p { max-width: 38rem; margin: 0; color: var(--muted-text); }
+  .work-arrow { font-size: 1.3rem; transition: transform var(--duration-standard) var(--ease-premium); }
+  .work-row:hover .work-arrow { transform: translate(5px, -5px); }
+  .prompt-row:hover { background: #e8e9ff; }
+  .tool-row:hover { background: #e6f0ed; }
+  .tutorial-row:hover { background: #f0e7dc; }
+  .brief-row:hover { background: #e8eef6; }
+
+  .lab-feature {
+    padding: clamp(5rem, 10vw, 9rem) 0;
+    background: var(--foreground);
+    color: #fff;
+    overflow: hidden;
+  }
+  .lab-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(3rem, 8vw, 8rem); align-items: center; }
+  .lab-copy .overline { margin-bottom: 1.5rem; color: var(--signal); }
+  .lab-copy h2 { color: #fff; }
+  .lab-copy h2 em { color: #aeb8ff; font-weight: 500; }
+  .lab-copy > p:not(.overline) { max-width: 38rem; margin: 2rem 0; color: rgba(255,255,255,0.64); font-size: 1.05rem; }
+  .lab-copy .arrow-link { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.3); }
+  .lab-visual {
+    position: relative;
+    min-height: 600px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,0.18);
+    background:
+      radial-gradient(circle at center, rgba(65,94,255,0.26), transparent 46%),
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: auto, 52px 52px, 52px 52px;
+  }
+  .face-map { position: relative; width: min(46%, 270px); aspect-ratio: .72; border: 1px solid rgba(255,255,255,0.72); border-radius: 46% 46% 48% 48% / 38% 38% 58% 58%; }
+  .face-map::before { content: ''; position: absolute; inset: 8%; border: 1px dashed rgba(185,255,102,0.56); border-radius: inherit; }
+  .face-line { position: absolute; left: -30%; right: -30%; height: 1px; background: rgba(255,255,255,0.25); }
+  .line-one { top: 30%; } .line-two { top: 50%; } .line-three { top: 72%; }
+  .face-eye { position: absolute; top: 38%; width: 19%; height: 7%; border-top: 1px solid #fff; border-radius: 50%; }
+  .eye-left { left: 20%; } .eye-right { right: 20%; }
+  .face-mouth { position: absolute; left: 39%; bottom: 23%; width: 22%; height: 5%; border-bottom: 1px solid #fff; border-radius: 50%; }
+  .lab-visual ol { position: absolute; right: 1.5rem; bottom: 1.5rem; margin: 0; padding: 0; list-style: none; font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.05em; text-transform: uppercase; }
+  .lab-visual li { display: flex; gap: 0.7rem; margin-top: 0.35rem; color: rgba(255,255,255,.66); }
+  .lab-visual li span { color: var(--signal); }
+
+  .latest-list { border-top: 1px solid var(--foreground); }
+  .latest-row { display: grid; grid-template-columns: 54px minmax(260px,.9fr) minmax(300px,1fr) 30px; gap: 1.5rem; align-items: start; padding: 2rem 0; border-bottom: 1px solid var(--border); color: var(--foreground); }
+  .latest-row > span { font-family: var(--font-mono); font-size: .68rem; color: var(--muted-text); }
+  .latest-row h3 { margin-top: .55rem; font-family: var(--font-body); font-size: clamp(1.25rem,2vw,1.8rem); font-weight: 500; line-height: 1.12; letter-spacing: -.035em; }
+  .latest-row > p { margin: 0; color: var(--muted-text); }
+  .latest-row b { font-weight: 400; transition: transform var(--duration-standard) var(--ease-premium); }
+  .latest-row:hover b { transform: translateX(5px); }
+
+  .closing { margin-bottom: clamp(5rem,10vw,9rem); padding: clamp(2rem,5vw,4rem); border: 1px solid var(--foreground); display: grid; grid-template-columns: .7fr 1.6fr .7fr; gap: 2rem; align-items: center; }
+  .closing > p:nth-child(2) { margin: 0; font-family: var(--font-display); font-size: clamp(1.6rem,3vw,3rem); line-height: 1.1; letter-spacing: -.035em; }
+  .closing a { justify-self: end; color: var(--foreground); font-weight: 600; }
+
+  @media (max-width: 980px) {
+    .hero-intro { width: 65%; grid-template-columns: 1fr; }
+    .manifesto-inner { grid-template-columns: 1fr 2fr; padding-block: 2rem; }
+    .manifesto-inner span { grid-column: 2; justify-self: start; }
+    .work-row { grid-template-columns: 42px minmax(200px,.8fr) 1fr 28px; }
+    .lab-grid { grid-template-columns: 1fr; }
+    .lab-copy { max-width: 48rem; }
+    .latest-row { grid-template-columns: 40px 1fr 28px; }
+    .latest-row > p { grid-column: 2; }
+    .closing { grid-template-columns: 1fr 2fr; }
+    .closing a { grid-column: 2; justify-self: start; }
+  }
+
+  @media (max-width: 700px) {
+    .hero { min-height: auto; padding-top: 1.2rem; }
+    .hero-top { display: none; }
+    .hero-title { min-height: 52vh; padding: 2rem 0; }
+    .hero-title h1 { font-size: clamp(5rem,27vw,8rem); line-height: .78; }
+    .hero-title h1 span { margin-left: 0; }
+    .hero-orbit { right: -24%; width: 65vw; opacity: .62; }
+    .hero-bottom { display: grid; }
+    .hero-intro { width: 100%; }
+    .manifesto-inner { grid-template-columns: 1fr; }
+    .manifesto-inner span { grid-column: auto; }
+    .section-head { display: grid; }
+    .work-row { grid-template-columns: 32px 1fr 24px; min-height: 138px; gap: .8rem; }
+    .work-row > p { grid-column: 2; font-size: .88rem; }
+    .work-arrow { grid-column: 3; grid-row: 1 / 3; }
+    .lab-visual { min-height: 480px; }
+    .face-map { width: 48%; }
+    .latest-row { grid-template-columns: 30px 1fr 22px; gap: .8rem; }
+    .latest-row > p { font-size: .9rem; }
+    .closing { grid-template-columns: 1fr; }
+    .closing a { grid-column: auto; }
+  }
+</style>
